@@ -20,7 +20,7 @@ Once the app is in place you can click into Automation, Active Playbooks, and th
 
 Take this URL and go over to the Lacework platform. Add a new Alert Channel of type webhook. You will need to give it a name and the webhook URL from above.  
 
-[[Setup Lacework Webhook Alert Channel](https://docs.lacework.com/webhook)]  
+[Setup Lacework Webhook Alert Channel](https://docs.lacework.com/webhook)  
 
 You can simulate an event by posting the JSON from the above link to the webhook URL.
 
