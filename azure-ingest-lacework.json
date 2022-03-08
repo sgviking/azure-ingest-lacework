@@ -52,7 +52,8 @@
                             "inputs": {
                                 "body": "@{triggerBody()}",
                                 "headers": {
-                                    "Log-Type": "Lacework_CL"
+                                    "Log-Type": "Lacework_CL",
+                                    "time-generated-field": "@triggerBody()?['event_timestamp']"
                                 },
                                 "host": {
                                     "connection": {
