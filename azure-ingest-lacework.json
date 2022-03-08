@@ -53,7 +53,7 @@
                                 "body": "@{triggerBody()}",
                                 "headers": {
                                     "Log-Type": "Lacework_CL",
-                                    "time-generated-field": "@{parseDateTime(triggerBody()?['event_timestamp'], 'en-US', 'dd MMMM yyyy H:mm Z')}"
+                                    "time-generated-field": "@{parseDateTime(triggerBody()?['event_timestamp'], 'en-US', 'dd MMM yyyy H:mm Z')}"
                                 },
                                 "host": {
                                     "connection": {
