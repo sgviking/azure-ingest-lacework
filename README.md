@@ -28,4 +28,22 @@ Last you can view these events in Microsoft Sentinel by going to Logs and then r
 
 ![Query Lacework events in Sentinel](https://raw.githubusercontent.com/sgviking/azure-ingest-lacework/main/images/search.png)  
 
+## Other starter queries  
+
+**Last 30 days billable usage** - This query will pull back the last 30 days of usage. If it's just Lacework data this number will be small so showing in MB.  
+
+```Usage
+| where TimeGenerated > startofday(ago(31d))
+| where StartTime > startofday(ago(31d))
+| where IsBillable == true
+| summarize TotalVolumeMB = sum(Quantity) by bin(StartTime, 1d), Solution
+| render columnchart```  
+
+**Lacework events by type** - This query breaks down the Lacework events by type.  
+
+```Lacework_CL
+| where event_type_s !contains 'TestEvent'
+| summarize event_count = count() by event_type_s
+| limit 1000```  
+
 
