@@ -1,0 +1,143 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+        "author": "Dan Daggett",
+        "comments": "This custom Azure Logic App connector will setup a Webhook listener. Lacework can then use this webhook to send events to Azure Sentinel under the Lacework_CL datasource."
+    },
+    "parameters": {
+        "PlaybookName": {
+            "defaultValue": "Ingest-Lacework",
+            "type": "String"
+        },
+        "WorkspaceID": {
+            "defaultValue": "your-workspaceID",
+            "type": "string"
+        },
+        "WorkspaceKey": {
+            "defaultValue": "your-workspaceKey",
+            "type": "securestring"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2016-06-01",
+            "location": "[resourceGroup().location]",
+            "name": "[variables('azureloganalyticsdatacollectorConnectionName')]",
+            "properties": {
+                "api": {
+                    "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureloganalyticsdatacollector')]"
+                },
+                "customParameterValues": {},
+                "displayName": "IngestLaceworkData",
+                "parameterValues": {
+                    "password": "[parameters('workspaceKey')]",
+                    "username": "[parameters('workspaceId')]"
+                }
+            },
+            "type": "Microsoft.Web/connections"
+        },
+        {
+            "apiVersion": "2017-07-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', variables('azureloganalyticsdatacollectorConnectionName'))]"
+            ],
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('PlaybookName')]",
+            "properties": {
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "actions": {
+                        "Send_Data": {
+                            "inputs": {
+                                "body": "@{triggerBody()}",
+                                "headers": {
+                                    "Log-Type": "Lacework_CL"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azureloganalyticsdatacollector']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/api/logs"
+                            },
+                            "runAfter": {},
+                            "type": "ApiConnection"
+                        }
+                    },
+                    "contentVersion": "1.0.0.0",
+                    "outputs": {},
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "inputs": {
+                                "schema": {
+                                    "properties": {
+                                        "event_description": {
+                                            "type": "string"
+                                        },
+                                        "event_id": {
+                                            "type": "string"
+                                        },
+                                        "event_link": {
+                                            "type": "string"
+                                        },
+                                        "event_severity": {
+                                            "type": "string"
+                                        },
+                                        "event_source": {
+                                            "type": "string"
+                                        },
+                                        "event_timestamp": {
+                                            "type": "string"
+                                        },
+                                        "event_title": {
+                                            "type": "string"
+                                        },
+                                        "event_type": {
+                                            "type": "string"
+                                        },
+                                        "lacework_account": {
+                                            "type": "string"
+                                        },
+                                        "rec_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "kind": "Http",
+                            "type": "Request"
+                        }
+                    }
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azureloganalyticsdatacollector": {
+                                "connectionId": "/subscriptions/a64872f0-56f4-41ca-b0ee-be10197e1641/resourceGroups/laceworkrg1/providers/Microsoft.Web/connections/azureloganalyticsdatacollector",
+                                "connectionName": "azureloganalyticsdatacollector",
+                                "id": "/subscriptions/a64872f0-56f4-41ca-b0ee-be10197e1641/providers/Microsoft.Web/locations/eastus/managedApis/azureloganalyticsdatacollector"
+                            }
+                        }
+                    }
+                },
+                "state": "Enabled"
+            },
+            "tags": {
+                "LogicAppsCategory": "security"
+            },
+            "type": "Microsoft.Logic/workflows"
+        }
+    ],
+    "variables": {
+        "azureloganalyticsdatacollectorConnectionName": "[concat('azureloganalyticsdatacollector-', parameters('PlaybookName'))]"
+    }
+}
