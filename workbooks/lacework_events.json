@@ -1,0 +1,208 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## Lacework Event Summary\n---"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Lacework_CL\n| where lacework_account_s contains 'TERA'\n| where event_type_s !contains 'TestEvent'\n| summarize event_count = count() by event_type_s",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "event_type_s",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "event_count",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumSignificantDigits": 3,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "name": "query - 1"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let severities = dynamic({\n  '1' : 'Critical',\n  '2' : 'High',\n  '3' : 'Medium',\n  '4' : 'Low',\n  '5' : 'Info'\n});\n\nLacework_CL\n| where lacework_account_s contains 'TERA'\n| where event_type_s !contains 'TestEvent'\n| summarize event_count = count() by event_severity_s\n| order by event_severity_s\n| project sev = severities[event_severity_s], event_count\n",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "sev",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "event_count",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumSignificantDigits": 3,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Usage\n| where TimeGenerated > startofday(ago(31d))\n| where StartTime > startofday(ago(31d))\n| where IsBillable == true\n| summarize TotalVolumeMB = sum(Quantity) by bin(StartTime, 1d), Solution",
+              "size": 4,
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "titleContent": {
+                  "columnMatch": "Solution",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "TotalVolumeMB",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 4,
+                    "options": {
+                      "style": "decimal",
+                      "maximumFractionDigits": 2,
+                      "maximumSignificantDigits": 3
+                    }
+                  }
+                },
+                "showBorder": false
+              }
+            },
+            "name": "query - 2"
+          }
+        ]
+      },
+      "customWidth": "50",
+      "name": "group - 1"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Lacework_CL\n| where lacework_account_s contains 'TERA'\n| where event_type_s !contains 'TestEvent'\n| summarize event_count = count() by event_title_s\n| order by event_count",
+              "size": 3,
+              "timeContext": {
+                "durationMs": 86400000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "piechart",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "event_count",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "event_count",
+                  "sortOrder": 2
+                }
+              ],
+              "graphSettings": {
+                "type": 0,
+                "topContent": {
+                  "columnMatch": "event_title_s",
+                  "formatter": 1
+                },
+                "centerContent": {
+                  "columnMatch": "event_count",
+                  "formatter": 1,
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumSignificantDigits": 3,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
+              }
+            },
+            "name": "query - 0"
+          }
+        ]
+      },
+      "customWidth": "50",
+      "name": "group - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Lacework_CL\n| where lacework_account_s contains 'TERA'\n| where event_type_s !contains 'Test'\n| order by event_severity_s asc\n| project TimeGenerated, event_title_s, event_description_s, event_link_s, lacework_account_s, event_source_s, event_severity_s",
+        "size": 2,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "query - 3"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/a64872f0-56f4-41ca-b0ee-be10197e1641/resourceGroups/laceworkrg1/providers/Microsoft.OperationalInsights/workspaces/sentineldan"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
