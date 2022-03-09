@@ -41,7 +41,7 @@ Usage
 | render columnchart
 ```  
 
-**Lacework events by type** - This query breaks down the Lacework events by type.  
+**Lacework events by type**  
 
 ```
 Lacework_CL
@@ -50,4 +50,36 @@ Lacework_CL
 | limit 1000
 ```  
 
+**Lacework events by title**
 
+```
+Lacework_CL
+| where event_type_s !contains 'TestEvent'
+| summarize event_count = count() by event_title_s
+| limit 1000
+```  
+
+
+**Lacework events by source**
+```
+Lacework_CL
+| where event_type_s !contains 'TestEvent'
+| summarize event_count = count() by event_
+| limit 1000
+```  
+
+## Add a Lacework Workbook  
+
+Go into your workspace and then click into Workbooks. Click to add a new workbook.
+
+![Add Workbook](https://raw.githubusercontent.com/sgviking/azure-ingest-lacework/main/images/add_workbook.png)  
+
+Click on Edit and then Click on <> to see the code view.  
+
+![Code View](https://raw.githubusercontent.com/sgviking/azure-ingest-lacework/main/images/code_view.png)
+
+Replace the text in the box with the JSON [from this repository](https://raw.githubusercontent.com/sgviking/azure-ingest-lacework/main/workbooks/lacework_events.json). Click Apply and then click Save.  
+
+This will give you a workbook that looks something like this.  
+
+![Azure Lacework Workbook](https://raw.githubusercontent.com/sgviking/azure-ingest-lacework/main/images/azure_dashboard.png)
