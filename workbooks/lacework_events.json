@@ -190,7 +190,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "Lacework_CL\n| where lacework_account_s contains 'TERA'\n| where event_type_s !contains 'Test'\n| order by event_severity_s asc\n| project TimeGenerated, event_title_s, event_description_s, event_link_s, lacework_account_s, event_source_s, event_severity_s",
+        "query": "Lacework_CL\n| where lacework_account_s contains 'TERA'\n| where event_type_s !contains 'Test'\n| order by TimeGenerated\n| project TimeGenerated, event_title_s, event_description_s, event_link_s, lacework_account_s, event_source_s, event_severity_s",
         "size": 2,
         "timeContext": {
           "durationMs": 86400000
