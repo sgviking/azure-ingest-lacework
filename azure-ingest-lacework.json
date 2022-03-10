@@ -26,7 +26,7 @@
             "name": "[variables('azureloganalyticsdatacollectorConnectionName')]",
             "properties": {
                 "api": {
-                    "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureloganalyticsdatacollector')]"
+                    "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/azureloganalyticsdatacollector-Ingest-Lacework')]"
                 },
                 "customParameterValues": {},
                 "displayName": "IngestLaceworkData",
